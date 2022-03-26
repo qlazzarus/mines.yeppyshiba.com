@@ -1,5 +1,6 @@
 import { Tile } from '@/components';
 import { Scene } from '@/enums';
+import { CoordinateUtil } from '@/utils';
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -10,32 +11,30 @@ export default class GameScene extends Phaser.Scene {
     }
 
     public create(): void {
-        const mapWidth = 20;
-        const mapHeight = 20;
+        const mapWidth = 10;
+        const mapHeight = 10;
         
-        const tileWidthHalf = 20;
-        const tileHeightHalf = 12;
+        const scale = 3;
+        const tileWidth = 12 * scale;
+        const tileHeight = 12 * scale;
 
         const centerX = GAME_WIDTH / 2;
-        const centerY = GAME_HEIGHT / 2;
-
-        const blocks = [];
+        const centerY = (GAME_HEIGHT - tileHeight * (mapHeight - 1)) / 2;
 
         for (let y = 0; y < mapHeight; y++) {
             for (let x = 0; x < mapWidth; x++) {
-                let tx = (x - y) * tileWidthHalf;
-                let ty = (x + y) * tileHeightHalf;
-
-                let block = (x % 2 === 0 || y % 2 === 0) ? 'block-000' : 'block-001';
-                
-                let tile = new Tile(this, centerX + tx, centerY + ty, block);
+                //let coords = CoordinateUtil.toIsometric(x, y);
+                //let tx = coords.x * tileWidth;
+                //let ty = coords.y * tileHeight;
+                /*
+                let tile = ;
 
                 tile.setData('row', x);
                 tile.setData('col', y);
-                tile.setDepth(centerY + ty);
-                
-                blocks.push(tile);
-                this.children.add(tile);
+                tile.setDepth(coords.y);
+                */
+            
+                this.children.add(new Tile(this, x, y, centerX, centerY, 2, scale));
             }
         }
     }

@@ -8,6 +8,7 @@ class Game extends Phaser.Game {
             height: GAME_HEIGHT,
             type: Phaser.WEBGL,
             parent: 'content',
+            pixelArt: true,
             scale: {
                 mode: Phaser.Scale.FIT,
                 autoCenter: Phaser.Scale.CENTER_BOTH

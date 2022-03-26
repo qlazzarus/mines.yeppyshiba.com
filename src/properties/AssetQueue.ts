@@ -17,9 +17,13 @@ export default <AssetQueueType[]>[
         }
     },
     {
-        type: 'atlas',
-        name: Asset.ISOBLOCKS,
-        path: 'assets/isoblocks.png',
-        atlasData: 'assets/isoblocks.json'
+        type: 'spritesheet',
+        name: Asset.MCBLOCKS,
+        path: 'assets/mcblocks.png',
+        frameConfig: {
+            frameWidth: 32,
+            frameHeight: 32,
+            margin: 4
+        }
     }
 ];
