@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
+        "target": "es2020",
+        "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
         "esModuleInterop": true,
         "sourceMap": true,
         "moduleResolution": "node",
@@ -10,12 +10,13 @@
         "isolatedModules": true,
         "baseUrl": "./src",
         "noImplicitThis": true,
+        "allowSyntheticDefaultImports": true,
         "paths": {
             "@/*": ["./*"]
-        }
+            /* "mini-signals": ["./node_modules/resource-loader/typings/mini-signals.d.ts"] */
+        },
+        "skipLibCheck": false,
+        "lib": ["DOM", "ES2020"]
     },
-    "typeRoots": [
-        "./node_modules/@types",
-        "./typings"
-    ]
+    "typeRoots": ["./node_modules/@types", "./typings"]
 }

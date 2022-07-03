@@ -1,77 +1,67 @@
-import path from 'path';
-import { Configuration, DefinePlugin } from 'webpack';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+import path from "path";
+import fs from "fs";
+import { Configuration, DefinePlugin } from "webpack";
+
+// plugins
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import CopyPlugin from "copy-webpack-plugin";
+
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
 
 export default <Configuration>{
-    entry: {
-        app: './src/app.ts'
+    entry: "./src/index.ts",
+
+    resolve: {
+        extensions: [".ts", ".tsx", ".js", ".json"],
+        alias: {
+            "@": path.resolve(__dirname, "src/"),
+        },
     },
+
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            }
-        ]
+                test: /\.css$/i,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
+                    "css-loader",
+                ],
+            },
+        ],
     },
-    resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
-        alias: {
-            '@': path.resolve(__dirname, 'src/')
-        }
-    },    
-    output: {
-        filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: './',
-        chunkFilename: '[id].js'
-    },
-    devtool: 'source-map',
-    plugins: [
-        new CleanWebpackPlugin(),
-        new DefinePlugin({
-            GAME_WIDTH: 1024,
-            GAME_HEIGHT: 768,
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: "./assets",
-                    to: "./assets",
-                    force: true
-                }
-            ]
-        }),
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './template.html',
-            minify: {
-                collapseWhitespace: true
-            }
-        })
-    ],
+
     optimization: {
         splitChunks: {
-            cacheGroups: {
-                commons: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all'
-                }
-            }
-        }
-    },
-    devServer: {
-        open: true,
-        hot: true,
-        devMiddleware: {
-            publicPath: '/'
+            chunks: "all",
         },
-        static: {
-            directory: path.resolve(__dirname, 'dist')
-        }
-    }
-}
+    },
+
+    plugins: [
+        new HtmlWebpackPlugin(),
+        new CopyPlugin({
+            patterns: [
+                "assets/**",
+                /*
+                {
+                    from: "assets/**",
+                    // if there are nested subdirectories , keep the hierarchy
+                    transformPath(targetPath: string, absolutePath: string) {
+                        const assetsPath = path.resolve(__dirname, "assets");
+                        const endpPath = absolutePath.slice(assetsPath.length);
+
+                        return Promise.resolve(`assets/${endpPath}`);
+                    },
+                },
+                */
+            ],
+        }),
+        new DefinePlugin({
+            GAME_WIDTH: 800,
+            GAME_HEIGHT: 600,
+            VERSION: JSON.stringify(pkg.version),
+        }),
+    ],
+};

@@ -1,8 +1,7 @@
 enum Asset {
-    ATARI_SMOOTH = 'atari-smooth',
-    FLAG = 'flags',
-    ISOBLOCKS = 'isoblocks',
-    MCBLOCKS = 'mcblocks',
+    RABBIT = "rabbit",
+    PIXIE = "pixie",
+    WATERMELON = "watermelon",
 }
 
 export default Asset;

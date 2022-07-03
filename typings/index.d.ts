@@ -1,30 +1,31 @@
-export {};
+import type { Application, Container } from "pixi.js";
+import type TransitionType from "@/enums/TransitionType";
+import type AbstractGameScene from "@/abstracts/scenes/AbstractGameScene";
 
 declare global {
-    const ASSET_PATH: string;
-    const CANVAS_RENDERER: boolean;
-    const GAME_HEIGHT: number;
+    const VERSION: string;
     const GAME_WIDTH: number;
-    const WEBGL_RENDERER: boolean;
+    const GAME_HEIGHT: number;
 
-    type AssetQueueType = {
-        type: 'image' | 'audio',
-        name: string,
-        path: string
-    } | {
-        type: 'spritesheet',
-        name: string,
-        path: string,
-        frameConfig: Phaser.Types.Loader.FileTypes.ImageFrameConfig
-    } | {
-        type: 'bitmap-font',
-        name: string,
-        path: string,
-        fontData: string
-    } | {
-        type: 'atlas',
-        name: string,
-        path: string,
-        atlasData: string
+    interface SceneTransition {
+        init(app: Application, type: TransitionType, sceneContainer: Container): void;
+        update(delta: number, callback: () => void): void;
     }
+
+    interface SceneSettings {
+        index: number;
+        name?: string;
+        gameScene: AbstractGameScene;
+        fadeInTransition: SceneTransition;
+        fadeOutTransition: SceneTransition;
+    }
+
+    interface GameScene {
+        sceneUpdate(delta: number): void;
+    }
+
+    type Assets = {
+        type: "image" | "audio";
+        path: string;
+    };
 }

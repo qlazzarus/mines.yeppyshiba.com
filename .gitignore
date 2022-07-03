@@ -1,7 +1,5 @@
-/node_modules
-/dist
-.vscode
-.idea
-npm-debug.log
-yarn-error.log
-analyzer-profile.json
+node_modules
+coverage
+dist/*
+.cache
+.env
