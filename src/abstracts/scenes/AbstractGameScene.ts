@@ -86,6 +86,10 @@ abstract class AbstractGameScene implements GameScene {
         this.sceneState = SceneState.FINALIZE;
     }
 
+    getLoader() {
+        return this.loader;
+    }
+
     getTexture(textureName: string): LoaderResource {
         return this.loader.resources[textureName];
     }
