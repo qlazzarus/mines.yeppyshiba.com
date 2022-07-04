@@ -15,21 +15,16 @@ window.onload = async (): Promise<void> => {
 
     const scenes = [
         {
-            index: 0,
             name: "loader",
             gameScene: new Loader(),
-            fadeInTransition: new SimpleFadeTransition(0.1),
-            fadeOutTransition: new SimpleFadeTransition(),
         },
         {
-            index: 1,
             name: "clockwise",
             gameScene: new Clockwise(),
             fadeInTransition: new SimpleFadeTransition(0.1),
             fadeOutTransition: new SimpleFadeTransition(),
         },
         {
-            index: 2,
             name: "counterClockwise",
             gameScene: new CounterClockwise(),
             fadeInTransition: new SimpleFadeTransition(0.1),

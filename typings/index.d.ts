@@ -13,11 +13,10 @@ declare global {
     }
 
     interface SceneSettings {
-        index: number;
-        name?: string;
+        name: string;
         gameScene: AbstractGameScene;
-        fadeInTransition: SceneTransition;
-        fadeOutTransition: SceneTransition;
+        fadeInTransition?: SceneTransition;
+        fadeOutTransition?: SceneTransition;
     }
 
     interface GameScene {

@@ -20,15 +20,18 @@ class Engine {
             sceneSettings.gameScene.init(this.app, this.loader, this.sceneSwitcher);
         });
 
+        /*
+        why??
         // Finding the scene with the lowest index
-        this.currentScene = scenes.reduce((prev, curr) => {
-            if (prev === undefined) {
+        this.currentScene = scenes.reduce((prev, curr, index) => {
+            if (index === 0) {
                 return curr;
-            } else {
-                return prev.index > curr.index ? curr : prev;
             }
-        });
 
+            return prev.index > curr.index ? curr : prev;
+        });
+        */
+        this.currentScene = scenes[0];
         this.setupScene(this.currentScene);
     }
 
@@ -69,8 +72,10 @@ class Engine {
         const gameScene: AbstractGameScene = sceneSettings.gameScene;
         gameScene.setup(sceneContainer);
 
-        sceneSettings.fadeInTransition.init(this.app, TransitionType.FADE_IN, sceneContainer);
-        sceneSettings.fadeOutTransition.init(this.app, TransitionType.FADE_OUT, sceneContainer);
+        sceneSettings.fadeInTransition &&
+            sceneSettings.fadeInTransition.init(this.app, TransitionType.FADE_IN, sceneContainer);
+        sceneSettings.fadeOutTransition &&
+            sceneSettings.fadeOutTransition.init(this.app, TransitionType.FADE_OUT, sceneContainer);
 
         gameScene.fadeInTransition = sceneSettings.fadeOutTransition;
         gameScene.fadeOutTransition = sceneSettings.fadeInTransition;

@@ -12,16 +12,16 @@ abstract class AbstractGameScene implements GameScene {
     protected app!: Application;
     protected loader!: Loader;
     protected sceneSwitcher!: (sceneName: string) => void;
-    protected fadeInSceneTransition!: SceneTransition;
-    protected fadeOutSceneTransition!: SceneTransition;
+    protected fadeInSceneTransition?: SceneTransition;
+    protected fadeOutSceneTransition?: SceneTransition;
     protected sceneContainer!: Container;
     private onDone!: () => void;
 
-    set fadeInTransition(fadeInSceneTransition: SceneTransition) {
+    set fadeInTransition(fadeInSceneTransition: SceneTransition | undefined) {
         this.fadeInSceneTransition = fadeInSceneTransition;
     }
 
-    set fadeOutTransition(fadeOutSceneTransition: SceneTransition) {
+    set fadeOutTransition(fadeOutSceneTransition: SceneTransition | undefined) {
         this.fadeOutSceneTransition = fadeOutSceneTransition;
     }
 
@@ -55,6 +55,17 @@ abstract class AbstractGameScene implements GameScene {
      */
     abstract sceneUpdate(delta: number): void;
 
+    private onSceneLoad(): void {
+        this.sceneState = SceneState.PROCESS;
+    }
+
+    private onSceneFinalize(): void {
+        this.sceneState = SceneState.DONE;
+        if (this.onDone) {
+            this.onDone();
+        }
+    }
+
     /**
      * Scene lifecycle update loop.
      * @param delta delta
@@ -62,21 +73,24 @@ abstract class AbstractGameScene implements GameScene {
     update(delta: number): void {
         switch (this.sceneState) {
             case SceneState.LOAD:
-                this.fadeInSceneTransition.update(delta, () => {
-                    this.sceneState = SceneState.PROCESS;
-                });
+                if (this.fadeInSceneTransition) {
+                    this.fadeInSceneTransition.update(delta, this.onSceneLoad.bind(this));
+                } else {
+                    this.onSceneLoad();
+                }
+
                 this.preTransitionUpdate(delta);
                 break;
             case SceneState.PROCESS:
                 this.sceneUpdate(delta);
                 break;
             case SceneState.FINALIZE:
-                this.fadeOutSceneTransition.update(delta, () => {
-                    this.sceneState = SceneState.DONE;
-                    if (this.onDone) {
-                        this.onDone();
-                    }
-                });
+                if (this.fadeOutSceneTransition) {
+                    this.fadeOutSceneTransition.update(delta, this.onSceneFinalize.bind(this));
+                } else {
+                    this.onSceneFinalize();
+                }
+
                 break;
         }
     }
