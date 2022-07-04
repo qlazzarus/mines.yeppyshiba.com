@@ -2,12 +2,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Container } from "pixi.js";
 import AbstractGameScene from "@/abstracts/scenes/AbstractGameScene";
-import SceneState from "@/enums/SceneState";
+import Scene from "@/enums/Scene";
 
-class Loader extends AbstractGameScene {
+class LoaderScene extends AbstractGameScene {
     setup(sceneContainer: Container): void {
-        this.sceneState = SceneState.LOAD;
-
         const loader = this.getLoader();
         loader.onComplete.once(this.onLoadComplete.bind(this));
         loader.onError.once(this.onLoadError.bind(this));
@@ -18,7 +16,7 @@ class Loader extends AbstractGameScene {
     sceneUpdate(delta: number): void {}
 
     private onLoadComplete(): void {
-        this.sceneSwitcher("clockwise");
+        this.sceneSwitcher(Scene.GAME_SCENE);
     }
 
     private onLoadError(): void {
@@ -26,4 +24,4 @@ class Loader extends AbstractGameScene {
     }
 }
 
-export default Loader;
+export default LoaderScene;

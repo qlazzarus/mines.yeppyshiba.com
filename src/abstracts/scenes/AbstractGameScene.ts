@@ -8,7 +8,7 @@ import SceneState from "@/enums/SceneState";
  * @implements {GameScene}
  */
 abstract class AbstractGameScene implements GameScene {
-    protected sceneState!: SceneState;
+    private sceneState!: SceneState;
     protected app!: Application;
     protected loader!: Loader;
     protected sceneSwitcher!: (sceneName: string) => void;
@@ -55,13 +55,14 @@ abstract class AbstractGameScene implements GameScene {
      */
     abstract sceneUpdate(delta: number): void;
 
-    private onSceneLoad(): void {
-        this.sceneState = SceneState.PROCESS;
+    getSceneState(): SceneState {
+        return this.sceneState;
     }
 
-    private onSceneFinalize(): void {
-        this.sceneState = SceneState.DONE;
-        if (this.onDone) {
+    setSceneState(sceneState: SceneState): void {
+        this.sceneState = sceneState;
+
+        if (sceneState === SceneState.DONE && this.onDone) {
             this.onDone();
         }
     }
@@ -74,9 +75,9 @@ abstract class AbstractGameScene implements GameScene {
         switch (this.sceneState) {
             case SceneState.LOAD:
                 if (this.fadeInSceneTransition) {
-                    this.fadeInSceneTransition.update(delta, this.onSceneLoad.bind(this));
+                    this.fadeInSceneTransition.update(delta, () => this.setSceneState(SceneState.PROCESS));
                 } else {
-                    this.onSceneLoad();
+                    this.setSceneState(SceneState.PROCESS);
                 }
 
                 this.preTransitionUpdate(delta);
@@ -86,9 +87,9 @@ abstract class AbstractGameScene implements GameScene {
                 break;
             case SceneState.FINALIZE:
                 if (this.fadeOutSceneTransition) {
-                    this.fadeOutSceneTransition.update(delta, this.onSceneFinalize.bind(this));
+                    this.fadeOutSceneTransition.update(delta, () => this.setSceneState(SceneState.DONE));
                 } else {
-                    this.onSceneFinalize();
+                    this.setSceneState(SceneState.DONE);
                 }
 
                 break;
@@ -97,7 +98,7 @@ abstract class AbstractGameScene implements GameScene {
 
     setFinalizing(onDone: () => void) {
         this.onDone = onDone;
-        this.sceneState = SceneState.FINALIZE;
+        this.setSceneState(SceneState.FINALIZE);
     }
 
     getLoader() {

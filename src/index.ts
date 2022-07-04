@@ -1,9 +1,9 @@
 import "@/style.css";
 import Bootstrap from "@/engine/Bootstrap";
 import Asset from "@/enums/Asset";
-import Clockwise from "@/scenes/Clockwise";
-import CounterClockwise from "@/scenes/CounterClockwise";
-import Loader from "@/scenes/Loader";
+import Scene from "@/enums/Scene";
+import GameScene from "@/scenes/GameScene";
+import LoaderScene from "@/scenes/LoaderScene";
 import SimpleFadeTransition from "@/transitions/SimpleFadeTransition";
 
 window.onload = async (): Promise<void> => {
@@ -15,18 +15,12 @@ window.onload = async (): Promise<void> => {
 
     const scenes = [
         {
-            name: "loader",
-            gameScene: new Loader(),
+            name: Scene.LOADER_SCENE,
+            gameScene: new LoaderScene(),
         },
         {
-            name: "clockwise",
-            gameScene: new Clockwise(),
-            fadeInTransition: new SimpleFadeTransition(0.1),
-            fadeOutTransition: new SimpleFadeTransition(),
-        },
-        {
-            name: "counterClockwise",
-            gameScene: new CounterClockwise(),
+            name: Scene.GAME_SCENE,
+            gameScene: new GameScene(),
             fadeInTransition: new SimpleFadeTransition(0.1),
             fadeOutTransition: new SimpleFadeTransition(),
         },

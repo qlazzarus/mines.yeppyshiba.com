@@ -1,6 +1,7 @@
 import { Application, Container, Loader } from "pixi.js";
 import AbstractGameScene from "@/abstracts/scenes/AbstractGameScene";
 import TransitionType from "@/enums/TransitionType";
+import SceneState from "@/enums/SceneState";
 
 class Engine {
     private sceneSettings: SceneSettings[];
@@ -15,23 +16,18 @@ class Engine {
     }
 
     init(scenes: SceneSettings[]) {
+        if (scenes.length === 0) {
+            console.error("SCENES NOT FOUND");
+            return;
+        }
+
         this.sceneSettings = scenes;
-        this.sceneSettings.forEach((sceneSettings: SceneSettings) => {
+        this.currentScene = scenes[0];
+
+        scenes.forEach((sceneSettings: SceneSettings) => {
             sceneSettings.gameScene.init(this.app, this.loader, this.sceneSwitcher);
         });
 
-        /*
-        why??
-        // Finding the scene with the lowest index
-        this.currentScene = scenes.reduce((prev, curr, index) => {
-            if (index === 0) {
-                return curr;
-            }
-
-            return prev.index > curr.index ? curr : prev;
-        });
-        */
-        this.currentScene = scenes[0];
         this.setupScene(this.currentScene);
     }
 
@@ -70,6 +66,7 @@ class Engine {
         this.app.stage.addChild(sceneContainer);
 
         const gameScene: AbstractGameScene = sceneSettings.gameScene;
+        gameScene.setSceneState(SceneState.LOAD);
         gameScene.setup(sceneContainer);
 
         sceneSettings.fadeInTransition &&
