@@ -1,6 +1,5 @@
 enum Asset {
-    RABBIT = "rabbit",
-    PIXIE = "pixie",
+    ISOBLOCKS = "isoblocks",
     WATERMELON = "watermelon",
 }
 

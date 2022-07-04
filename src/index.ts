@@ -8,8 +8,7 @@ import SimpleFadeTransition from "@/transitions/SimpleFadeTransition";
 
 window.onload = async (): Promise<void> => {
     const assets = {
-        [Asset.RABBIT]: "./assets/simpleSpriteSheet.json",
-        [Asset.PIXIE]: "./assets/spine-assets/pixie.json",
+        [Asset.ISOBLOCKS]: "./assets/isoblocks.json",
         [Asset.WATERMELON]: "./assets/watermelon.png",
     };
 
