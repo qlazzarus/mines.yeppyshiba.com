@@ -25,17 +25,7 @@ class Bootstrap {
     }
 
     private loaderInit(): void {
-        this.loader.onComplete.once(this.onLoadComplete);
-        this.loader.onError.once(this.onLoadError);
         this.loader.load();
-    }
-
-    private onLoadComplete(): void {
-        console.log("onLoadComplete");
-    }
-
-    private onLoadError(): void {
-        console.log("onLoadError");
     }
 
     private resizeInit(window: Window, body: HTMLElement): void {
