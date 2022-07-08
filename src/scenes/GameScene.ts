@@ -1,12 +1,12 @@
 import { Container, Sprite } from "pixi.js";
-import AbstractGameScene from "@/abstracts/scenes/AbstractGameScene";
-import Asset from "@/enums/Asset";
+import AbstractScene from "@/abstracts/AbstractScene";
+import WaterMelon from "@/objects/WaterMelon";
 
-class GameScene extends AbstractGameScene {
+class GameScene extends AbstractScene {
     private melon!: Sprite;
 
     setup(sceneContainer: Container): void {
-        this.melon = new Sprite(this.getTexture(Asset.WATERMELON).texture);
+        this.melon = new WaterMelon();
         this.melon.anchor.x = 0.5;
         this.melon.anchor.y = 0.5;
 

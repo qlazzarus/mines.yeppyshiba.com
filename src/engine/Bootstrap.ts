@@ -8,8 +8,8 @@ class Bootstrap {
 
     constructor(options: IApplicationOptions) {
         this.app = new Application(options);
-        this.loader = new Loader();
-        this.engine = new Engine(this.app, this.loader);
+        this.loader = Loader.shared;
+        this.engine = new Engine(this.app);
     }
 
     asset(queue: { [index: string]: string }): void {

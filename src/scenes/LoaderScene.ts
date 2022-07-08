@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { Container } from "pixi.js";
-import AbstractGameScene from "@/abstracts/scenes/AbstractGameScene";
+import { Container, Loader } from "pixi.js";
+import AbstractScene from "@/abstracts/AbstractScene";
 import Scene from "@/enums/Scene";
 
-class LoaderScene extends AbstractGameScene {
+class LoaderScene extends AbstractScene {
     setup(sceneContainer: Container): void {
-        const loader = this.getLoader();
+        const loader = Loader.shared;
         loader.onComplete.once(this.onLoadComplete.bind(this));
         loader.onError.once(this.onLoadError.bind(this));
     }

@@ -1,17 +1,15 @@
-import { Application, Container, Loader } from "pixi.js";
-import AbstractGameScene from "@/abstracts/scenes/AbstractGameScene";
+import { Application, Container } from "pixi.js";
+import AbstractScene from "@/abstracts/AbstractScene";
 import TransitionType from "@/enums/TransitionType";
 import SceneState from "@/enums/SceneState";
 
 class Engine {
     private sceneSettings: SceneSettings[];
     private app: Application;
-    private loader: Loader;
     private currentScene?: SceneSettings;
 
-    constructor(app: Application, loader: Loader) {
+    constructor(app: Application) {
         this.app = app;
-        this.loader = loader;
         this.sceneSettings = [];
     }
 
@@ -25,7 +23,7 @@ class Engine {
         this.currentScene = scenes[0];
 
         scenes.forEach((sceneSettings: SceneSettings) => {
-            sceneSettings.gameScene.init(this.app, this.loader, this.sceneSwitcher);
+            sceneSettings.gameScene.init(this.app, this.sceneSwitcher);
         });
 
         this.setupScene(this.currentScene);
@@ -65,7 +63,7 @@ class Engine {
         const sceneContainer = new Container();
         this.app.stage.addChild(sceneContainer);
 
-        const gameScene: AbstractGameScene = sceneSettings.gameScene;
+        const gameScene: AbstractScene = sceneSettings.gameScene;
         gameScene.setSceneState(SceneState.LOAD);
         gameScene.setup(sceneContainer);
 

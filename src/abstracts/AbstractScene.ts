@@ -1,16 +1,15 @@
-import { Application, Container, Loader, LoaderResource } from "pixi.js";
+import { Application, Container } from "pixi.js";
 import SceneState from "@/enums/SceneState";
 
 /**
  * Base implementation of a scene. Provides lifecycle update logic.
  * @abstract
  * @class AbstractGameScene
- * @implements {GameScene}
+ * @implements {Scene}
  */
-abstract class AbstractGameScene implements GameScene {
+abstract class AbstractScene implements Scene {
     private sceneState!: SceneState;
     protected app!: Application;
-    protected loader!: Loader;
     protected sceneSwitcher!: (sceneName: string) => void;
     protected fadeInSceneTransition?: SceneTransition;
     protected fadeOutSceneTransition?: SceneTransition;
@@ -30,9 +29,8 @@ abstract class AbstractGameScene implements GameScene {
      * @param app pixi.application
      * @param sceneSwitcher sceneSwitcher
      */
-    init(app: Application, loader: Loader, sceneSwitcher: (sceneName: string) => void): void {
+    init(app: Application, sceneSwitcher: (sceneName: string) => void): void {
         this.app = app;
-        this.loader = loader;
         this.sceneSwitcher = sceneSwitcher;
     }
 
@@ -100,14 +98,6 @@ abstract class AbstractGameScene implements GameScene {
         this.onDone = onDone;
         this.setSceneState(SceneState.FINALIZE);
     }
-
-    getLoader() {
-        return this.loader;
-    }
-
-    getTexture(textureName: string): LoaderResource {
-        return this.loader.resources[textureName];
-    }
 }
 
-export default AbstractGameScene;
+export default AbstractScene;
