@@ -1,7 +1,7 @@
-import AbstractObject from "@/abstracts/AbstractObject";
+import AbstractSprite from "@/abstracts/AbstractSprite";
 import Asset from "@/enums/Asset";
 
-class WaterMelon extends AbstractObject {
+class WaterMelon extends AbstractSprite {
     constructor() {
         super(Asset.WATERMELON);
     }
