@@ -1,28 +1,38 @@
-import { Container, Sprite } from "pixi.js";
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Container } from "pixi.js";
 import AbstractScene from "@/abstracts/AbstractScene";
-import WaterMelon from "@/objects/WaterMelon";
+import Tile from "@/objects/Tile";
 
 class GameScene extends AbstractScene {
-    private melon!: Sprite;
+    private tiles!: Tile[];
+    static readonly mapWidth = 10;
+    static readonly mapHeight = 10;
+
+    constructor() {
+        super();
+        this.tiles = [];
+    }
 
     setup(sceneContainer: Container): void {
-        this.melon = new WaterMelon();
-        this.melon.anchor.x = 0.5;
-        this.melon.anchor.y = 0.5;
+        const centerX = GAME_WIDTH / 2;
+        const centerY = (GAME_HEIGHT - (Tile.tileHeight / 2) * (GameScene.mapHeight - 1)) / 2;
 
-        this.melon.x = this.app.renderer.width / 2;
-        this.melon.y = this.app.renderer.height / 2;
+        console.log({ GAME_WIDTH, GAME_HEIGHT, centerX, centerY });
 
-        sceneContainer.addChild(this.melon);
+        for (let y = 0; y < GameScene.mapHeight; y++) {
+            for (let x = 0; x < GameScene.mapWidth; x++) {
+                const tile = new Tile("block-004", x, y, centerX, centerY);
+
+                this.tiles.push(tile);
+                sceneContainer.addChild(tile);
+            }
+        }
     }
 
-    preTransitionUpdate(delta: number): void {
-        this.melon.rotation += 0.1 * delta;
-    }
+    preTransitionUpdate(delta: number): void {}
 
-    sceneUpdate(delta: number): void {
-        this.melon.rotation += 0.1 * delta;
-    }
+    sceneUpdate(delta: number): void {}
 }
 
 export default GameScene;

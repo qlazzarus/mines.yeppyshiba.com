@@ -59,8 +59,8 @@ export default <Configuration>{
             ],
         }),
         new DefinePlugin({
-            GAME_WIDTH: 800,
-            GAME_HEIGHT: 600,
+            GAME_WIDTH: 600,
+            GAME_HEIGHT: 400,
             VERSION: JSON.stringify(pkg.version),
         }),
     ],
