@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Loader, Sprite } from "pixi.js";
 
 abstract class AbstractSpriteSheet extends Sprite implements GameObject {

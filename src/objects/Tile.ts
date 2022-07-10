@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import AbstractSpriteSheet from "@/abstracts/AbstractSpriteSheet";
 import Asset from "@/enums/Asset";
 import CoordinateUtil from "@/utils/CoordinateUtil";
@@ -17,11 +16,16 @@ class Tile extends AbstractSpriteSheet {
         this.x = isoX + offsetX;
         this.y = isoY + offsetY;
         this.interactive = true;
-        this.addListener("pointerup", this.onClick.bind(this));
+        this.addListener("pointerover", this.onOver.bind(this));
+        this.addListener("pointerout", this.onOut.bind(this));
     }
 
-    onClick() {
-        console.log("hello world");
+    onOver() {
+        this.tint = 0xff0000;
+    }
+
+    onOut() {
+        this.tint = 0xffffff;
     }
 }
 
