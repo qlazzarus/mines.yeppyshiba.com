@@ -19,11 +19,9 @@ class SimpleFadeTransition implements SceneTransition {
     }
 
     private createTransitionSprite(type: TransitionType) {
-        const { width, height } = this.app.renderer;
-
         const graphics = new Graphics();
         graphics.beginFill(0x000000);
-        graphics.drawRect(0, 0, width, height);
+        graphics.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         graphics.endFill();
 
         this.transitionSprite = new Sprite(
