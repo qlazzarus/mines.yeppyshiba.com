@@ -1,9 +1,9 @@
-import { Polygon } from "pixi.js";
 import AbstractSpriteSheet from "@/abstracts/AbstractSpriteSheet";
 import Asset from "@/enums/Asset";
 import TileStatus from "@/enums/TileStatus";
 import GameScene from "@/scenes/GameScene";
 import CoordinateUtil from "@/utils/CoordinateUtil";
+import { Polygon } from "pixi.js";
 
 class Tile extends AbstractSpriteSheet {
     static readonly hitOffsetX = 25;
@@ -13,6 +13,8 @@ class Tile extends AbstractSpriteSheet {
     static readonly initialTint = 0xffffff;
     static readonly clickTint = 0xff0000;
 
+    private posX: number;
+    private posY: number;
     private scene: GameScene;
     private tileStatus: TileStatus | null;
     private opened: boolean;
@@ -26,13 +28,16 @@ class Tile extends AbstractSpriteSheet {
         const isoX = x * (Tile.tileWidth / 2);
         const isoY = y * (Tile.tileHeight / 2);
 
-        this.scene = scene;
         this.x = isoX + offsetX;
         this.y = isoY + offsetY;
         this.interactive = true;
         this.buttonMode = true;
         this.tileStatus = null;
         this.hitArea = this.getCoverArea();
+
+        this.scene = scene;
+        this.posX = posX;
+        this.posY = posX;
         this.opened = false;
         this.flagged = false;
         this.question = false;
@@ -54,13 +59,26 @@ class Tile extends AbstractSpriteSheet {
         );
     }
 
+    drawStatus(): void {
+        // TODO
+        console.log(this.tileStatus);
+    }
+
     afterClick() {
         this.opened = true;
         this.tint = Tile.initialTint;
 
         if (this.tileStatus === TileStatus.MINE) {
-            this.scene.boom(this.x, this.y);
+            this.scene.afterBoom(this);
+            return;
         }
+
+        if (this.tileStatus === TileStatus.EMPTY) {
+            this.scene.afterEmpty(this);
+            return;
+        }
+
+        this.drawStatus();
     }
 
     onClick() {
@@ -89,6 +107,14 @@ class Tile extends AbstractSpriteSheet {
 
     setTileStatus(status: TileStatus) {
         this.tileStatus = status;
+    }
+
+    getPosX(): number {
+        return this.posX;
+    }
+
+    getPosY(): number {
+        return this.posY;
     }
 
     getTileStatus() {

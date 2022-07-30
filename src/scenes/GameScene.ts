@@ -27,8 +27,12 @@ class GameScene extends AbstractScene {
         this.drawMines(sceneContainer, offsetX, offsetY);
     }
 
-    boom(posX: number, posY: number) {
-        console.log(posX, posY);
+    afterBoom(tile: Tile) {
+        console.log("boom", tile);
+    }
+
+    afterEmpty(tile: Tile) {
+        console.log("empty", tile);
     }
 
     preTransitionUpdate(delta: number): void {}
