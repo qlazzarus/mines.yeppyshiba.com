@@ -3,36 +3,63 @@
 import { Container } from "pixi.js";
 import AbstractScene from "@/abstracts/AbstractScene";
 import Tile from "@/objects/Tile";
+import CoordinateUtil from "@/utils/CoordinateUtil";
 
 class GameScene extends AbstractScene {
-    private tiles!: Tile[];
-    static readonly mapWidth = 10;
-    static readonly mapHeight = 10;
+    private mines!: boolean[][];
+    private tiles!: Tile[][];
+
+    static readonly columns = 9;
+    static readonly rows = 9;
+    static readonly maxMine = 10;
 
     constructor() {
         super();
-        this.tiles = [];
+        this.mines = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(false));
+        this.tiles = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
     }
 
     setup(sceneContainer: Container): void {
-        const centerX = GAME_WIDTH / 2;
-        const centerY = (GAME_HEIGHT - (Tile.tileHeight / 2) * (GameScene.mapHeight - 1)) / 2;
+        const offsetX = GAME_WIDTH / 2;
+        const offsetY = (GAME_HEIGHT - (Tile.tileHeight / 2) * (GameScene.rows - 1)) / 2;
 
-        console.log({ GAME_WIDTH, GAME_HEIGHT, centerX, centerY });
+        this.placeMines();
+        this.drawMines(sceneContainer, offsetX, offsetY);
+    }
 
-        for (let y = 0; y < GameScene.mapHeight; y++) {
-            for (let x = 0; x < GameScene.mapWidth; x++) {
-                const tile = new Tile("block-004", x, y, centerX, centerY);
-
-                this.tiles.push(tile);
-                sceneContainer.addChild(tile);
-            }
-        }
+    boom(posX: number, posY: number) {
+        console.log(posX, posY);
     }
 
     preTransitionUpdate(delta: number): void {}
 
     sceneUpdate(delta: number): void {}
+
+    private placeMines(): void {
+        let mineCount = 0;
+        while (mineCount < GameScene.maxMine) {
+            const x = Math.floor(Math.random() * GameScene.columns);
+            const y = Math.floor(Math.random() * GameScene.rows);
+
+            if (this.mines[x][y] === false) {
+                this.mines[x][y] = true;
+                mineCount++;
+            }
+        }
+    }
+
+    private drawMines(sceneContainer: Container, offsetX: number, offsetY: number): void {
+        for (let posY = 0; posY < GameScene.rows; posY++) {
+            for (let posX = 0; posX < GameScene.columns; posX++) {
+                const status = CoordinateUtil.getTileStatus(this.mines, posX, posY, GameScene.columns, GameScene.rows);
+                const tile = new Tile(this, "block-004", posX, posY, offsetX, offsetY);
+                tile.setTileStatus(status);
+
+                sceneContainer.addChild(tile);
+                this.tiles[posX][posY] = tile;
+            }
+        }
+    }
 }
 
 export default GameScene;

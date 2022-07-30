@@ -9,7 +9,6 @@ import SimpleFadeTransition from "@/transitions/SimpleFadeTransition";
 window.onload = async (): Promise<void> => {
     const assets = {
         [Asset.ISOBLOCKS]: "./assets/isoblocks.json",
-        [Asset.WATERMELON]: "./assets/watermelon.png",
     };
 
     const scenes = [
@@ -26,7 +25,7 @@ window.onload = async (): Promise<void> => {
     ];
 
     const app = new Bootstrap({
-        backgroundColor: 0xff0000,
+        backgroundColor: 0x000000,
         width: GAME_WIDTH,
         height: GAME_HEIGHT,
     });
