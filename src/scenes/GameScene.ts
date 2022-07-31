@@ -15,7 +15,7 @@ class GameScene extends AbstractScene {
     private tiles!: Tile[][];
     private mineQueue: Matrix[];
     private textQueue: Matrix[];
-    private openQueue: Tile[];
+    private openQueue: Matrix[];
     private status: GameStatus;
 
     static readonly columns = 9;
@@ -74,7 +74,9 @@ class GameScene extends AbstractScene {
             return;
         }
 
-        const tile = queue.pop();
+        const pos = queue.pop();
+        if (!pos) return;
+        const tile = this.tiles[pos[0]][pos[1]];
         if (tile) tile.onClick();
     }
 
@@ -82,7 +84,6 @@ class GameScene extends AbstractScene {
         const number = new NumberTile(status + "");
         number.x = tile.x + Tile.tileWidth / 2 - 5;
         number.y = tile.y;
-        tile.setSheetTexture(GameScene.openedTile);
         this.container.addChild(number);
     }
 
@@ -90,8 +91,6 @@ class GameScene extends AbstractScene {
         if (tile.isOpened()) {
             return;
         }
-
-        tile.setSheetTexture(GameScene.openedTile);
 
         const posX = tile.getPosX();
         const posY = tile.getPosY();
@@ -114,9 +113,8 @@ class GameScene extends AbstractScene {
             if (x >= GameScene.columns || y >= GameScene.rows) return;
 
             const status = this.mines[x][y];
-            const vectorTile = this.tiles[x][y];
             if (status !== TileStatus.MINE) {
-                this.openQueue.push(vectorTile);
+                this.openQueue.push([x, y]);
             }
         });
     }
@@ -174,7 +172,7 @@ class GameScene extends AbstractScene {
     private drawMines(offsetX: number, offsetY: number): void {
         for (let posY = 0; posY < GameScene.rows; posY++) {
             for (let posX = 0; posX < GameScene.columns; posX++) {
-                const tile = new Tile(this, GameScene.unkownTile, posX, posY, offsetX, offsetY);
+                const tile = new Tile(this, posX, posY, offsetX, offsetY);
                 this.tiles[posX][posY] = tile;
                 this.container.addChild(tile);
             }

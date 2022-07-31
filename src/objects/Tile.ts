@@ -12,6 +12,8 @@ class Tile extends AbstractSpriteSheet {
     static readonly tileCoverHeight = 26;
     static readonly initialTint = 0xffffff;
     static readonly clickTint = 0xff0000;
+    static readonly unkownTile = "block-004";
+    static readonly openedTile = "block-006";
 
     private posX: number;
     private posY: number;
@@ -20,8 +22,8 @@ class Tile extends AbstractSpriteSheet {
     private flagged: boolean;
     private question: boolean;
 
-    constructor(scene: GameScene, id: string, posX: number, posY: number, offsetX: number, offsetY: number) {
-        super(Asset.ISOBLOCKS, id);
+    constructor(scene: GameScene, posX: number, posY: number, offsetX: number, offsetY: number) {
+        super(Asset.ISOBLOCKS, Tile.unkownTile);
 
         const { x, y } = CoordinateUtil.toIsometric(posX, posY);
         const isoX = x * (Tile.tileWidth / 2);
@@ -62,10 +64,6 @@ class Tile extends AbstractSpriteSheet {
             return;
         }
 
-        this.buttonMode = false;
-        this.interactive = false;
-        this.tint = Tile.initialTint;
-
         this.scene.afterClick(this);
         this.setOpened();
     }
@@ -103,7 +101,12 @@ class Tile extends AbstractSpriteSheet {
     }
 
     setOpened(): void {
+        this.setSheetTexture(Tile.openedTile);
         this.opened = true;
+
+        this.buttonMode = false;
+        this.interactive = false;
+        this.tint = Tile.initialTint;
     }
 
     isOpened(): boolean {
