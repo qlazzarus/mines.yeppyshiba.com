@@ -26,6 +26,8 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface GameObject {}
 
+    type Matrix = [number, number];
+
     type Assets = {
         type: "image" | "audio";
         path: string;

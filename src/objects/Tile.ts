@@ -1,6 +1,5 @@
 import AbstractSpriteSheet from "@/abstracts/AbstractSpriteSheet";
 import Asset from "@/enums/Asset";
-import TileStatus from "@/enums/TileStatus";
 import GameScene from "@/scenes/GameScene";
 import CoordinateUtil from "@/utils/CoordinateUtil";
 import { Polygon } from "pixi.js";
@@ -16,7 +15,6 @@ class Tile extends AbstractSpriteSheet {
     private posX: number;
     private posY: number;
     private scene: GameScene;
-    private tileStatus: TileStatus | null;
     private opened: boolean;
     private flagged: boolean;
     private question: boolean;
@@ -32,7 +30,6 @@ class Tile extends AbstractSpriteSheet {
         this.y = isoY + offsetY;
         this.interactive = true;
         this.buttonMode = true;
-        this.tileStatus = null;
         this.hitArea = this.getCoverArea();
 
         this.scene = scene;
@@ -46,7 +43,7 @@ class Tile extends AbstractSpriteSheet {
         this.addListener("click", this.onClick.bind(this));
     }
 
-    getCoverArea() {
+    private getCoverArea() {
         return new Polygon(
             Tile.hitOffsetX,
             0,
@@ -59,37 +56,17 @@ class Tile extends AbstractSpriteSheet {
         );
     }
 
-    drawStatus(): void {
-        // TODO
-        console.log(this.tileStatus);
-    }
-
-    afterClick() {
-        this.opened = true;
-        this.tint = Tile.initialTint;
-
-        if (this.tileStatus === TileStatus.MINE) {
-            this.scene.afterBoom(this);
-            return;
-        }
-
-        if (this.tileStatus === TileStatus.EMPTY) {
-            this.scene.afterEmpty(this);
-            return;
-        }
-
-        this.drawStatus();
-    }
-
-    onClick() {
+    private onClick() {
         if (this.opened) {
             return;
         }
 
-        this.afterClick();
+        this.opened = true;
+        this.tint = Tile.initialTint;
+        this.scene.afterClick(this);
     }
 
-    onOver() {
+    private onOver() {
         if (this.opened) {
             return;
         }
@@ -97,16 +74,12 @@ class Tile extends AbstractSpriteSheet {
         this.tint = Tile.clickTint;
     }
 
-    onOut() {
+    private onOut() {
         if (this.opened) {
             return;
         }
 
         this.tint = Tile.initialTint;
-    }
-
-    setTileStatus(status: TileStatus) {
-        this.tileStatus = status;
     }
 
     getPosX(): number {
@@ -115,10 +88,6 @@ class Tile extends AbstractSpriteSheet {
 
     getPosY(): number {
         return this.posY;
-    }
-
-    getTileStatus() {
-        return this.tileStatus;
     }
 }
 
