@@ -42,7 +42,6 @@ class GameScene extends AbstractScene {
         this.placeMines();
         this.setTileStatus();
         this.drawMines(offsetX, offsetY);
-        console.log(this.mines);
     }
 
     afterClick(tile: Tile) {
@@ -80,8 +79,6 @@ class GameScene extends AbstractScene {
     }
 
     private numberTile(tile: Tile, status: TileStatus): void {
-        console.log(this.openQueue);
-
         const number = new NumberTile(status + "");
         number.x = tile.x + Tile.tileWidth / 2 - 5;
         number.y = tile.y;
@@ -125,8 +122,6 @@ class GameScene extends AbstractScene {
     }
 
     private gameOver(tile: Tile): void {
-        console.log(this.openQueue);
-
         const explosive = new Explosive();
         explosive.play();
         explosive.x = tile.x;
