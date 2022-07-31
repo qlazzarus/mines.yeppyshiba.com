@@ -28,6 +28,10 @@ declare global {
 
     type Matrix = [number, number];
 
+    type Dictionary<T> = {
+        [key: string]: T;
+    };
+
     type Assets = {
         type: "image" | "audio";
         path: string;

@@ -1,8 +1,9 @@
+import { Polygon } from "pixi.js";
 import AbstractSpriteSheet from "@/abstracts/AbstractSpriteSheet";
 import Asset from "@/enums/Asset";
+import GameStatus from "@/enums/GameStatus";
 import GameScene from "@/scenes/GameScene";
 import CoordinateUtil from "@/utils/CoordinateUtil";
-import { Polygon } from "pixi.js";
 
 class Tile extends AbstractSpriteSheet {
     static readonly hitOffsetX = 25;
@@ -34,7 +35,7 @@ class Tile extends AbstractSpriteSheet {
 
         this.scene = scene;
         this.posX = posX;
-        this.posY = posX;
+        this.posY = posY;
         this.opened = false;
         this.flagged = false;
         this.question = false;
@@ -56,18 +57,25 @@ class Tile extends AbstractSpriteSheet {
         );
     }
 
-    private onClick() {
-        if (this.opened) {
+    onClick() {
+        if (this.scene.getStatus() !== GameStatus.PLAYING || this.isOpened()) {
             return;
         }
 
-        this.opened = true;
+        this.buttonMode = false;
+        this.interactive = false;
         this.tint = Tile.initialTint;
+
         this.scene.afterClick(this);
+        this.setOpened();
     }
 
     private onOver() {
-        if (this.opened) {
+        if (this.scene.getStatus() !== GameStatus.PLAYING) {
+            return;
+        }
+
+        if (this.isOpened()) {
             return;
         }
 
@@ -75,7 +83,11 @@ class Tile extends AbstractSpriteSheet {
     }
 
     private onOut() {
-        if (this.opened) {
+        if (this.scene.getStatus() !== GameStatus.PLAYING) {
+            return;
+        }
+
+        if (this.isOpened()) {
             return;
         }
 
@@ -88,6 +100,14 @@ class Tile extends AbstractSpriteSheet {
 
     getPosY(): number {
         return this.posY;
+    }
+
+    setOpened(): void {
+        this.opened = true;
+    }
+
+    isOpened(): boolean {
+        return this.opened;
     }
 }
 

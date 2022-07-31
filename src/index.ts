@@ -8,7 +8,8 @@ import SimpleFadeTransition from "@/transitions/SimpleFadeTransition";
 
 window.onload = async (): Promise<void> => {
     const assets = {
-        [Asset.EXP]: "./assets/exp2_0.json",
+        [Asset.ATARI_SMOOTH]: "./assets/atari-smooth.xml",
+        [Asset.EXPLOSIVE]: "./assets/explosive.json",
         [Asset.ISOBLOCKS]: "./assets/isoblocks.json",
     };
 
@@ -29,6 +30,7 @@ window.onload = async (): Promise<void> => {
         backgroundColor: 0x000000,
         width: GAME_WIDTH,
         height: GAME_HEIGHT,
+        antialias: true,
     });
 
     app.asset(assets);
