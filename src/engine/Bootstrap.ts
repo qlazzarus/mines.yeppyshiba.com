@@ -21,6 +21,7 @@ class Bootstrap {
 
         this.loaderInit();
         this.resizeInit(window, body);
+        this.contextMenuInit();
         this.tickerInit();
     }
 
@@ -50,6 +51,14 @@ class Bootstrap {
 
     private tickerInit(): void {
         this.app.ticker.add((delta: number) => this.engine.update(delta));
+    }
+
+    private contextMenuInit(): void {
+        this.app.view.addEventListener("contextmenu", (e: MouseEvent): void => {
+            e.stopPropagation();
+            e.preventDefault();
+            this.engine.onContextMenu(e);
+        });
     }
 }
 

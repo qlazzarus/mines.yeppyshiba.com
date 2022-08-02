@@ -6,7 +6,7 @@ import GameStatus from "@/enums/GameStatus";
 import TileStatus from "@/enums/TileStatus";
 import Explosive from "@/objects/Explosive";
 import Tile from "@/objects/Tile";
-import NumberTile from "@/objects/NumberTile";
+import AtariFont from "@/objects/AtariFont";
 
 class GameScene extends AbstractScene {
     private container!: Container;
@@ -15,8 +15,12 @@ class GameScene extends AbstractScene {
     private tiles!: Tile[][];
     private mineQueue: Matrix[];
     private textQueue: Matrix[];
-    private openQueue: Matrix[];
+    private openQueue: Map<string, Matrix>;
     private status: GameStatus;
+    private mineCount = 0;
+    private timer = 0;
+    private emptyTileProcess: boolean;
+    private clock!: AtariFont;
 
     static readonly columns = 9;
     static readonly rows = 9;
@@ -29,9 +33,10 @@ class GameScene extends AbstractScene {
         this.mines = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(TileStatus.EMPTY));
         this.mineQueue = [];
         this.textQueue = [];
-        this.openQueue = [];
+        this.openQueue = new Map<string, Matrix>();
         this.tiles = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
-        this.status = GameStatus.PLAYING;
+        this.status = GameStatus.READY;
+        this.emptyTileProcess = false;
     }
 
     setup(sceneContainer: Container): void {
@@ -41,10 +46,30 @@ class GameScene extends AbstractScene {
         this.container = sceneContainer;
         this.placeMines();
         this.setTileStatus();
+
         this.drawMines(offsetX, offsetY);
+        this.drawUi();
+
+        const debug = new AtariFont("debug");
+        debug.x = 10;
+        debug.y = 10;
+        debug.interactive = true;
+        debug.buttonMode = true;
+        debug.addListener(
+            "click",
+            (() => {
+                console.log(this.status);
+            }).bind(this),
+        );
+
+        sceneContainer.addChild(debug);
     }
 
     afterClick(tile: Tile) {
+        if (this.status === GameStatus.READY) {
+            this.onPlaying();
+        }
+
         if (this.status !== GameStatus.PLAYING) {
             return;
         }
@@ -69,22 +94,45 @@ class GameScene extends AbstractScene {
     preTransitionUpdate(delta: number): void {}
 
     sceneUpdate(delta: number): void {
-        const queue = this.openQueue;
-        if (queue.length === 0) {
-            return;
-        }
-
-        const pos = queue.pop();
-        if (!pos) return;
-        const tile = this.tiles[pos[0]][pos[1]];
-        if (tile) tile.onClick();
+        this.emptyTileAfterProcess();
+        this.timerProcess();
     }
 
     private numberTile(tile: Tile, status: TileStatus): void {
-        const number = new NumberTile(status + "");
+        tile.setOpened();
+
+        const number = new AtariFont(status + "");
         number.x = tile.x + Tile.tileWidth / 2 - 5;
         number.y = tile.y;
         this.container.addChild(number);
+    }
+
+    private timerProcess(): void {
+        if (this.status !== GameStatus.PLAYING) return;
+        if (!this.timer) return;
+        if (!this.clock) return;
+
+        // cache
+        const diff = Math.floor((Date.now() - this.timer) / 1000);
+        const tobe = (diff < 10 ? "0" : "") + diff;
+        if (this.clock.text === tobe) return;
+
+        this.clock.text = tobe;
+    }
+
+    private emptyTileAfterProcess(): void {
+        if (this.emptyTileProcess) return;
+        const queue = this.openQueue;
+        if (queue.size === 0) return;
+
+        this.emptyTileProcess = true;
+
+        for (const [key, [x, y]] of queue) {
+            this.tiles[x][y].setOpened();
+            queue.delete(key);
+        }
+
+        this.emptyTileProcess = false;
     }
 
     private emptyTile(tile: Tile): void {
@@ -111,15 +159,19 @@ class GameScene extends AbstractScene {
 
             if (x < 0 || y < 0) return;
             if (x >= GameScene.columns || y >= GameScene.rows) return;
+            if (this.openQueue.get(`${x}_${y}`)) return;
 
             const status = this.mines[x][y];
             if (status !== TileStatus.MINE) {
-                this.openQueue.push([x, y]);
+                this.openQueue.set(`${x}_${y}`, [x, y]);
+                this.tiles[x][y].onClick();
             }
         });
     }
 
     private gameOver(tile: Tile): void {
+        tile.setOpened();
+
         const explosive = new Explosive();
         explosive.play();
         explosive.x = tile.x;
@@ -179,8 +231,21 @@ class GameScene extends AbstractScene {
         }
     }
 
+    private drawUi() {
+        this.clock = new AtariFont("");
+        this.clock.x = GAME_WIDTH / 2;
+        this.clock.y = 10;
+        this.clock.align = "center";
+        this.container.addChild(this.clock);
+    }
+
     getStatus(): GameStatus {
         return this.status;
+    }
+
+    onPlaying(): void {
+        this.status = GameStatus.PLAYING;
+        this.timer = Date.now();
     }
 }
 

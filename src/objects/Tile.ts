@@ -44,6 +44,7 @@ class Tile extends AbstractSpriteSheet {
         this.addListener("pointerover", this.onOver.bind(this));
         this.addListener("pointerout", this.onOut.bind(this));
         this.addListener("click", this.onClick.bind(this));
+        this.addListener("contextmenu", this.onContextMenu.bind(this));
     }
 
     private getCoverArea() {
@@ -59,17 +60,20 @@ class Tile extends AbstractSpriteSheet {
         );
     }
 
+    onContextMenu() {
+        console.log("hello world");
+    }
+
     onClick() {
-        if (this.scene.getStatus() !== GameStatus.PLAYING || this.isOpened()) {
+        if (![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus()) || this.isOpened()) {
             return;
         }
 
         this.scene.afterClick(this);
-        this.setOpened();
     }
 
     private onOver() {
-        if (this.scene.getStatus() !== GameStatus.PLAYING) {
+        if (![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus())) {
             return;
         }
 
@@ -81,7 +85,7 @@ class Tile extends AbstractSpriteSheet {
     }
 
     private onOut() {
-        if (this.scene.getStatus() !== GameStatus.PLAYING) {
+        if (![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus())) {
             return;
         }
 

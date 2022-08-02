@@ -1,6 +1,6 @@
 import { BitmapText, IBitmapTextStyle } from "pixi.js";
 
-class NumberTile extends BitmapText implements GameObject {
+class AtariFont extends BitmapText implements GameObject {
     constructor(text: string, options: Partial<IBitmapTextStyle> = {}) {
         const defaultOptions = {
             fontName: "AtariClassicExtrasmooth",
@@ -11,4 +11,4 @@ class NumberTile extends BitmapText implements GameObject {
     }
 }
 
-export default NumberTile;
+export default AtariFont;

@@ -87,6 +87,10 @@ class Engine {
 
         this.currentScene.gameScene.update(delta);
     }
+
+    onContextMenu(e: MouseEvent): void {
+        console.log(e);
+    }
 }
 
 export default Engine;
