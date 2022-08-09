@@ -10,6 +10,7 @@ window.onload = async (): Promise<void> => {
     const assets = {
         [Asset.ATARI_SMOOTH]: "./assets/atari-smooth.xml",
         [Asset.EXPLOSIVE]: "./assets/explosive.json",
+        [Asset.FLAG]: "./assets/flag.json",
         [Asset.ISOBLOCKS]: "./assets/isoblocks.json",
     };
 

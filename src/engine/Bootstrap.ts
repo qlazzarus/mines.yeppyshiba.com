@@ -57,7 +57,6 @@ class Bootstrap {
         this.app.view.addEventListener("contextmenu", (e: MouseEvent): void => {
             e.stopPropagation();
             e.preventDefault();
-            this.engine.onContextMenu(e);
         });
     }
 }

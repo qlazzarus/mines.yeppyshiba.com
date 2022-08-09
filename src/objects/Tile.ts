@@ -20,7 +20,6 @@ class Tile extends AbstractSpriteSheet {
     private scene: GameScene;
     private opened: boolean;
     private flagged: boolean;
-    private question: boolean;
 
     constructor(scene: GameScene, posX: number, posY: number, offsetX: number, offsetY: number) {
         super(Asset.ISOBLOCKS, Tile.unkownTile);
@@ -40,11 +39,10 @@ class Tile extends AbstractSpriteSheet {
         this.posY = posY;
         this.opened = false;
         this.flagged = false;
-        this.question = false;
         this.addListener("pointerover", this.onOver.bind(this));
         this.addListener("pointerout", this.onOut.bind(this));
         this.addListener("click", this.onClick.bind(this));
-        this.addListener("contextmenu", this.onContextMenu.bind(this));
+        this.addListener("rightclick", this.onRightClick.bind(this));
     }
 
     private getCoverArea() {
@@ -60,12 +58,28 @@ class Tile extends AbstractSpriteSheet {
         );
     }
 
-    onContextMenu() {
-        console.log("hello world");
+    onRightClick() {
+        if (![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus()) || this.isOpened()) {
+            return;
+        }
+
+        this.scene.afterRightClick(this);
+    }
+
+    recursiveClick() {
+        if (![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus()) || this.isOpened()) {
+            return;
+        }
+
+        this.scene.afterClick(this);
     }
 
     onClick() {
-        if (![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus()) || this.isOpened()) {
+        if (
+            ![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus()) ||
+            this.isOpened() ||
+            this.isFlagged()
+        ) {
             return;
         }
 
@@ -77,7 +91,7 @@ class Tile extends AbstractSpriteSheet {
             return;
         }
 
-        if (this.isOpened()) {
+        if (this.isOpened() || this.isFlagged()) {
             return;
         }
 
@@ -89,7 +103,7 @@ class Tile extends AbstractSpriteSheet {
             return;
         }
 
-        if (this.isOpened()) {
+        if (this.isOpened() || this.isFlagged()) {
             return;
         }
 
@@ -113,8 +127,22 @@ class Tile extends AbstractSpriteSheet {
         this.tint = Tile.initialTint;
     }
 
+    setUnflagged(): void {
+        this.flagged = false;
+        this.tint = Tile.initialTint;
+    }
+
+    setFlagged(): void {
+        this.flagged = true;
+        this.tint = 0x00ff00; // TODO
+    }
+
     isOpened(): boolean {
         return this.opened;
+    }
+
+    isFlagged(): boolean {
+        return this.flagged;
     }
 }
 

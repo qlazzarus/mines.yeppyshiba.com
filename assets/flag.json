@@ -1,0 +1,258 @@
+{
+    "frames": {
+        "00": {
+            "frame": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "01": {
+            "frame": {
+                "x": 202,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "02": {
+            "frame": {
+                "x": 404,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "03": {
+            "frame": {
+                "x": 606,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "04": {
+            "frame": {
+                "x": 808,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "05": {
+            "frame": {
+                "x": 1010,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "06": {
+            "frame": {
+                "x": 1212,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "07": {
+            "frame": {
+                "x": 1414,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "08": {
+            "frame": {
+                "x": 1616,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        },
+        "09": {
+            "frame": {
+                "x": 1818,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "rotated": false,
+            "trimmed": false,
+            "spriteSourceSize": {
+                "x": 0,
+                "y": 0,
+                "w": 202,
+                "h": 324
+            },
+            "sourceSize": {
+                "w": 202,
+                "h": 324
+            },
+            "pivot": {
+                "x": 0.5,
+                "y": 0.5
+            }
+        }
+    },
+    "animations": {
+        "default": ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
+    },
+    "meta": {
+        "app": "http://free-tex-packer.com",
+        "version": "0.6.7",
+        "image": "flag.png",
+        "format": "RGBA8888",
+        "size": {
+            "w": 2020,
+            "h": 324
+        },
+        "scale": 1
+    }
+}

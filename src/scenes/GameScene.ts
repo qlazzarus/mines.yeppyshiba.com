@@ -12,15 +12,17 @@ class GameScene extends AbstractScene {
     private container!: Container;
 
     private mines!: TileStatus[][];
+    private flagged!: boolean[][];
     private tiles!: Tile[][];
     private mineQueue: Matrix[];
     private textQueue: Matrix[];
     private openQueue: Map<string, Matrix>;
     private status: GameStatus;
-    private mineCount = 0;
+    private flagCount = 0;
     private timer = 0;
     private emptyTileProcess: boolean;
     private clock!: AtariFont;
+    private mineCounter!: AtariFont;
 
     static readonly columns = 9;
     static readonly rows = 9;
@@ -31,6 +33,7 @@ class GameScene extends AbstractScene {
     constructor() {
         super();
         this.mines = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(TileStatus.EMPTY));
+        this.flagged = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(false));
         this.mineQueue = [];
         this.textQueue = [];
         this.openQueue = new Map<string, Matrix>();
@@ -65,6 +68,31 @@ class GameScene extends AbstractScene {
         sceneContainer.addChild(debug);
     }
 
+    afterRightClick(tile: Tile) {
+        if (this.status === GameStatus.READY) {
+            this.onPlaying();
+        }
+
+        if (this.status !== GameStatus.PLAYING) {
+            return;
+        }
+
+        if (tile.isOpened()) {
+            return;
+        }
+
+        const x = tile.getPosX();
+        const y = tile.getPosY();
+
+        if (!tile.isFlagged()) {
+            this.flagCount++;
+            tile.setFlagged();
+        } else {
+            this.flagCount--;
+            tile.setUnflagged();
+        }
+    }
+
     afterClick(tile: Tile) {
         if (this.status === GameStatus.READY) {
             this.onPlaying();
@@ -96,6 +124,7 @@ class GameScene extends AbstractScene {
     sceneUpdate(delta: number): void {
         this.emptyTileAfterProcess();
         this.timerProcess();
+        this.mineCountProcess();
     }
 
     private numberTile(tile: Tile, status: TileStatus): void {
@@ -118,6 +147,17 @@ class GameScene extends AbstractScene {
         if (this.clock.text === tobe) return;
 
         this.clock.text = tobe;
+    }
+
+    private mineCountProcess(): void {
+        if (this.status !== GameStatus.PLAYING) return;
+        if (!this.mineCounter) return;
+
+        // cache
+        const tobe = GameScene.maxMine - this.flagCount + "";
+        if (this.mineCounter.text === tobe) return;
+
+        this.mineCounter.text = tobe;
     }
 
     private emptyTileAfterProcess(): void {
@@ -164,7 +204,7 @@ class GameScene extends AbstractScene {
             const status = this.mines[x][y];
             if (status !== TileStatus.MINE) {
                 this.openQueue.set(`${x}_${y}`, [x, y]);
-                this.tiles[x][y].onClick();
+                this.tiles[x][y].recursiveClick();
             }
         });
     }
@@ -237,6 +277,12 @@ class GameScene extends AbstractScene {
         this.clock.y = 10;
         this.clock.align = "center";
         this.container.addChild(this.clock);
+
+        this.mineCounter = new AtariFont("");
+        this.mineCounter.x = (GAME_WIDTH / 4) * 3;
+        this.mineCounter.y = 10;
+        this.mineCounter.align = "center";
+        this.container.addChild(this.mineCounter);
     }
 
     getStatus(): GameStatus {
