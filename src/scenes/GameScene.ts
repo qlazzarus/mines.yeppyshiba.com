@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Container } from "pixi.js";
 import AbstractScene from "@/abstracts/AbstractScene";
 import GameStatus from "@/enums/GameStatus";
@@ -16,7 +14,6 @@ class GameScene extends AbstractScene {
     private flagged!: (Flag | null)[][];
     private tiles!: Tile[][];
     private mineQueue: Matrix[];
-    private textQueue: Matrix[];
     private openQueue: Map<string, Matrix>;
     private status: GameStatus;
     private flagCount = 0;
@@ -36,7 +33,6 @@ class GameScene extends AbstractScene {
         this.mines = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(TileStatus.EMPTY));
         this.flagged = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
         this.mineQueue = [];
-        this.textQueue = [];
         this.openQueue = new Map<string, Matrix>();
         this.tiles = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
         this.status = GameStatus.READY;
@@ -135,8 +131,10 @@ class GameScene extends AbstractScene {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
     preTransitionUpdate(delta: number): void {}
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     sceneUpdate(delta: number): void {
         this.emptyTileAfterProcess();
         this.timerProcess();
