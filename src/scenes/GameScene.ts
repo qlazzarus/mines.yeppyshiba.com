@@ -7,12 +7,13 @@ import TileStatus from "@/enums/TileStatus";
 import Explosive from "@/objects/Explosive";
 import Tile from "@/objects/Tile";
 import AtariFont from "@/objects/AtariFont";
+import Flag from "@/objects/Flag";
 
 class GameScene extends AbstractScene {
     private container!: Container;
 
     private mines!: TileStatus[][];
-    private flagged!: boolean[][];
+    private flagged!: (Flag | null)[][];
     private tiles!: Tile[][];
     private mineQueue: Matrix[];
     private textQueue: Matrix[];
@@ -33,7 +34,7 @@ class GameScene extends AbstractScene {
     constructor() {
         super();
         this.mines = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(TileStatus.EMPTY));
-        this.flagged = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(false));
+        this.flagged = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
         this.mineQueue = [];
         this.textQueue = [];
         this.openQueue = new Map<string, Matrix>();
@@ -53,9 +54,7 @@ class GameScene extends AbstractScene {
         this.drawMines(offsetX, offsetY);
         this.drawUi();
 
-        const debug = new AtariFont("debug");
-        debug.x = 10;
-        debug.y = 10;
+        const debug = new AtariFont("debug", 10, 10);
         debug.interactive = true;
         debug.buttonMode = true;
         debug.addListener(
@@ -66,6 +65,32 @@ class GameScene extends AbstractScene {
         );
 
         sceneContainer.addChild(debug);
+    }
+
+    placeFlag(tile: Tile) {
+        this.flagCount++;
+        tile.setFlagged();
+
+        const x = tile.getPosX();
+        const y = tile.getPosY();
+        const flag = new Flag(tile.x + (Tile.tileWidth / 8) * 5, tile.y - Tile.tileHeight / 2);
+        this.container.addChild(flag);
+        this.flagged[x][y] = flag;
+    }
+
+    removeFlag(tile: Tile) {
+        const x = tile.getPosX();
+        const y = tile.getPosY();
+        const flag = this.flagged[x][y];
+
+        if (!flag) {
+            return;
+        }
+
+        this.flagCount--;
+        tile.setUnflagged();
+        this.container.removeChild(flag);
+        this.flagged[x][y] = null;
     }
 
     afterRightClick(tile: Tile) {
@@ -81,16 +106,7 @@ class GameScene extends AbstractScene {
             return;
         }
 
-        const x = tile.getPosX();
-        const y = tile.getPosY();
-
-        if (!tile.isFlagged()) {
-            this.flagCount++;
-            tile.setFlagged();
-        } else {
-            this.flagCount--;
-            tile.setUnflagged();
-        }
+        tile.isFlagged() ? this.removeFlag(tile) : this.placeFlag(tile);
     }
 
     afterClick(tile: Tile) {
@@ -130,9 +146,8 @@ class GameScene extends AbstractScene {
     private numberTile(tile: Tile, status: TileStatus): void {
         tile.setOpened();
 
-        const number = new AtariFont(status + "");
-        number.x = tile.x + Tile.tileWidth / 2 - 5;
-        number.y = tile.y;
+        const number = new AtariFont(status + "", tile.x + Tile.tileWidth / 2 - 5, tile.y);
+        number.tint = 0x000000;
         this.container.addChild(number);
     }
 
@@ -168,7 +183,11 @@ class GameScene extends AbstractScene {
         this.emptyTileProcess = true;
 
         for (const [key, [x, y]] of queue) {
-            this.tiles[x][y].setOpened();
+            const tile = this.tiles[x][y];
+
+            this.removeFlag(tile);
+
+            tile.setOpened();
             queue.delete(key);
         }
 
@@ -212,10 +231,7 @@ class GameScene extends AbstractScene {
     private gameOver(tile: Tile): void {
         tile.setOpened();
 
-        const explosive = new Explosive();
-        explosive.play();
-        explosive.x = tile.x;
-        explosive.y = tile.y - Tile.tileHeight / 2;
+        const explosive = new Explosive(tile.x, tile.y - Tile.tileHeight / 2);
         this.status = GameStatus.OVER;
         this.container.addChild(explosive);
     }
@@ -272,15 +288,11 @@ class GameScene extends AbstractScene {
     }
 
     private drawUi() {
-        this.clock = new AtariFont("");
-        this.clock.x = GAME_WIDTH / 2;
-        this.clock.y = 10;
+        this.clock = new AtariFont("", GAME_WIDTH / 2, 10);
         this.clock.align = "center";
         this.container.addChild(this.clock);
 
-        this.mineCounter = new AtariFont("");
-        this.mineCounter.x = (GAME_WIDTH / 4) * 3;
-        this.mineCounter.y = 10;
+        this.mineCounter = new AtariFont("", (GAME_WIDTH / 4) * 3, 10);
         this.mineCounter.align = "center";
         this.container.addChild(this.mineCounter);
     }
