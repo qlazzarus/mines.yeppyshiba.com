@@ -30,11 +30,11 @@ class GameScene extends AbstractScene {
 
     constructor() {
         super();
-        this.mines = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(TileStatus.EMPTY));
-        this.flagged = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
+        this.mines = [...Array(GameScene.rows)].map(() => Array(GameScene.columns).fill(TileStatus.EMPTY));
+        this.flagged = [...Array(GameScene.rows)].map(() => Array(GameScene.columns).fill(null));
         this.mineQueue = [];
         this.openQueue = new Map<string, Matrix>();
-        this.tiles = [...Array(GameScene.rows)].map((x) => Array(GameScene.columns).fill(null));
+        this.tiles = [...Array(GameScene.rows)].map(() => Array(GameScene.columns).fill(null));
         this.status = GameStatus.READY;
         this.emptyTileProcess = false;
     }
