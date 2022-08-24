@@ -12,6 +12,7 @@ class Tile extends AbstractSpriteSheet {
     static readonly tileCoverHeight = 26;
     static readonly initialTint = 0xffffff;
     static readonly clickTint = 0xff0000;
+    static readonly clickHold = 200;
     static readonly unkownTile = "block-004";
     static readonly openedTile = "block-006";
 
@@ -20,6 +21,8 @@ class Tile extends AbstractSpriteSheet {
     private scene: GameScene;
     private opened: boolean;
     private flagged: boolean;
+    private lastClicked: number;
+    private lastClickCallback: NodeJS.Timeout | null;
 
     constructor(scene: GameScene, posX: number, posY: number, offsetX: number, offsetY: number) {
         super(Asset.ISOBLOCKS, Tile.unkownTile);
@@ -39,9 +42,15 @@ class Tile extends AbstractSpriteSheet {
         this.posY = posY;
         this.opened = false;
         this.flagged = false;
+        this.lastClicked = 0;
+        this.lastClickCallback = null;
+
         this.addListener("pointerover", this.onOver.bind(this));
         this.addListener("pointerout", this.onOut.bind(this));
-        this.addListener("click", this.onClick.bind(this));
+
+        this.addListener("pointerdown", this.onClickStart.bind(this));
+        this.addListener("pointerup", this.onClickEnd.bind(this));
+
         this.addListener("rightclick", this.onRightClick.bind(this));
     }
 
@@ -74,6 +83,28 @@ class Tile extends AbstractSpriteSheet {
         this.scene.afterClick(this);
     }
 
+    checkHoldEvent() {
+        this.lastClickCallback = null;
+        this.setHold();
+    }
+
+    onClickStart() {
+        this.lastClicked = Date.now();
+        if (!this.lastClickCallback) {
+            this.lastClickCallback = setTimeout(this.checkHoldEvent.bind(this), Tile.clickHold);
+        }
+    }
+
+    onClickEnd() {
+        const diff = Date.now() - this.lastClicked;
+
+        if (diff > Tile.clickHold) {
+            this.scene.afterHoldClick(this);
+        } else {
+            this.onClick();
+        }
+    }
+
     onClick() {
         if (
             ![GameStatus.PLAYING, GameStatus.READY].includes(this.scene.getStatus()) ||
@@ -84,6 +115,29 @@ class Tile extends AbstractSpriteSheet {
         }
 
         this.scene.afterClick(this);
+        this.setUnHold();
+    }
+
+    private setHold() {
+        // TODO
+        /*
+        this.scale = {
+            x: 0.5,
+            y: 0.5,
+        };
+        */
+        //console.log("sethold");
+    }
+
+    private setUnHold() {
+        // TODO
+        /*
+        this.scale = {
+            x: 1,
+            y: 1,
+        };
+        */
+        //console.log("setunhold");
     }
 
     private onOver() {
@@ -96,6 +150,7 @@ class Tile extends AbstractSpriteSheet {
         }
 
         this.tint = Tile.clickTint;
+        this.setUnHold();
     }
 
     private onOut() {
@@ -108,6 +163,7 @@ class Tile extends AbstractSpriteSheet {
         }
 
         this.tint = Tile.initialTint;
+        this.setUnHold();
     }
 
     getPosX(): number {
@@ -125,16 +181,19 @@ class Tile extends AbstractSpriteSheet {
         this.buttonMode = false;
         this.interactive = false;
         this.tint = Tile.initialTint;
+        this.setUnHold();
     }
 
     setUnflagged(): void {
         this.flagged = false;
         this.tint = Tile.initialTint;
+        this.setUnHold();
     }
 
     setFlagged(): void {
         this.flagged = true;
         this.tint = 0x00ff00; // TODO
+        this.setUnHold();
     }
 
     isOpened(): boolean {

@@ -89,6 +89,18 @@ class GameScene extends AbstractScene {
         this.flagged[x][y] = null;
     }
 
+    afterHoldClick(tile: Tile) {
+        if (this.status === GameStatus.READY) {
+            this.onPlaying();
+        }
+
+        if (this.status !== GameStatus.PLAYING) {
+            return;
+        }
+
+        alert("hold!");
+    }
+
     afterRightClick(tile: Tile) {
         if (this.status === GameStatus.READY) {
             this.onPlaying();
